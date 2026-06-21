@@ -54,6 +54,12 @@ class Gender(str, enum.Enum):
     FEMALE = "female"
     UNKNOWN = "unknown"
 
+
+class IncomeType(str, enum.Enum):
+    SESSION = "session"
+    COMMISSION = "commission"
+    BONUS = "bonus"
+
 class User(Base):
     __tablename__ = "users"
 

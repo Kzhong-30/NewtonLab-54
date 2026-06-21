@@ -27,12 +27,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth.router, prefix="/api/auth", tags=["认证"])
-app.include_router(scripts.router, prefix="/api/scripts", tags=["剧本"])
-app.include_router(games.router, prefix="/api/games", tags=["游戏"])
-app.include_router(reviews.router, prefix="/api/reviews", tags=["评价"])
-app.include_router(dm.router, prefix="/api/dm", tags=["DM"])
-app.include_router(community.router, prefix="/api/community", tags=["社区"])
+app.include_router(auth.router, prefix="/api", tags=["认证"])
+app.include_router(scripts.router, prefix="/api", tags=["剧本"])
+app.include_router(games.router, prefix="/api", tags=["游戏"])
+app.include_router(reviews.router, prefix="/api", tags=["评价"])
+app.include_router(dm.router, prefix="/api", tags=["DM"])
+app.include_router(community.router, prefix="/api", tags=["社区"])
 
 
 @app.get("/health", summary="健康检查")

@@ -2,15 +2,15 @@ from typing import Any, List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from ..database import get_db
-from ..models import User, UserRole, PostType, CommunityPost, CommunityComment
-from ..schemas import CommunityPost, CommunityPostCreate, CommunityPostUpdate, CommunityComment, CommunityCommentCreate
+from ..models import User, UserRole, PostType, CommunityPost, Comment
+from ..schemas import CommunityPost as CommunityPostSchema, CommunityPostCreate, CommunityPostUpdate, Comment as CommentSchema, CommentCreate
 from ..crud import community as crud_community
 from ..core.security import get_current_user
 
 router = APIRouter(prefix="/community", tags=["社区"])
 
 
-@router.get("/posts/{post_id}", response_model=CommunityPost)
+@router.get("/posts/{post_id}", response_model=CommunityPostSchema)
 def get_post(*, db: Session = Depends(get_db), post_id: int) -> Any:
     post = crud_community.get(db, id=post_id)
     if not post:

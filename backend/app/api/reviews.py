@@ -27,7 +27,7 @@ def get_review(
     *,
     db: Session = Depends(get_db),
     review_id: int
-) -> Any:
+) -> None:
     review = crud_review.get(db, id=review_id)
     if not review:
         raise HTTPException(
@@ -54,7 +54,7 @@ def update_review(
     current_user: User = Depends(get_current_user),
     review_id: int,
     review_in: ReviewUpdate
-) -> Any:
+) -> None:
     review = crud_review.get(db, id=review_id)
     if not review:
         raise HTTPException(
@@ -75,7 +75,7 @@ def delete_review(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
     review_id: int
-) -> Any:
+) -> None:
     review = crud_review.get(db, id=review_id)
     if not review:
         raise HTTPException(
@@ -88,4 +88,3 @@ def delete_review(
             detail="没有权限删除此评价"
         )
     crud_review.remove(db, id=review_id)
-    return None

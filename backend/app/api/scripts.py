@@ -21,7 +21,7 @@ def get_scripts(
     is_approved: Optional[bool] = Query(True, description="是否审核通过"),
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=100)
-) -> Any:
+) -> None:
     scripts = crud_script.get_filtered(
         db,
         script_type=script_type,
@@ -56,7 +56,7 @@ def get_script(
     *,
     db: Session = Depends(get_db),
     script_id: int
-) -> Any:
+) -> None:
     script = crud_script.get(db, id=script_id)
     if not script:
         raise HTTPException(
@@ -103,7 +103,7 @@ def create_script(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
     script_in: ScriptCreate
-) -> Any:
+) -> None:
     if current_user.role not in [UserRole.STORE_OWNER, UserRole.ADMIN]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -126,7 +126,7 @@ def update_script(
     current_user: User = Depends(get_current_user),
     script_id: int,
     script_in: ScriptUpdate
-) -> Any:
+) -> None:
     script = crud_script.get(db, id=script_id)
     if not script:
         raise HTTPException(
