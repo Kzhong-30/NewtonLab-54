@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date, time
 from typing import Optional, List
 from pydantic import BaseModel, Field
 from ..models import GameStatus, AssignmentMethod
@@ -25,7 +25,8 @@ class GameParticipant(BaseModel):
 class GameBase(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
     script_id: int
-    scheduled_time: datetime
+    game_date: date
+    start_time: time
     location: Optional[str] = None
     max_players: int = Field(..., ge=2)
     description: Optional[str] = None
@@ -41,7 +42,8 @@ class GameCreate(GameBase):
 
 class GameUpdate(BaseModel):
     title: Optional[str] = None
-    scheduled_time: Optional[datetime] = None
+    game_date: Optional[date] = None
+    start_time: Optional[time] = None
     location: Optional[str] = None
     max_players: Optional[int] = None
     description: Optional[str] = None
@@ -71,7 +73,8 @@ class GameList(BaseModel):
     title: str
     script_id: int
     script_title: Optional[str] = None
-    scheduled_time: datetime
+    game_date: date
+    start_time: time
     location: Optional[str] = None
     max_players: int
     current_players: int

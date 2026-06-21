@@ -39,7 +39,8 @@ def get_games(
             "title": g.title,
             "script_id": g.script_id,
             "script_title": g.script.title if g.script else None,
-            "scheduled_time": datetime.combine(g.game_date, g.start_time) if g.game_date and g.start_time else None,
+            "game_date": g.game_date.isoformat() if g.game_date else None,
+            "start_time": g.start_time.isoformat() if g.start_time else None,
             "location": g.location,
             "max_players": g.max_players,
             "current_players": g.current_players,
@@ -74,7 +75,8 @@ def get_my_games(
             "title": g.title,
             "script_id": g.script_id,
             "script_title": g.script.title if g.script else None,
-            "scheduled_time": datetime.combine(g.game_date, g.start_time) if g.game_date and g.start_time else None,
+            "game_date": g.game_date.isoformat() if g.game_date else None,
+            "start_time": g.start_time.isoformat() if g.start_time else None,
             "location": g.location,
             "max_players": g.max_players,
             "current_players": g.current_players,
@@ -125,7 +127,8 @@ def get_game(
         "id": game.id,
         "title": game.title,
         "script_id": game.script_id,
-        "scheduled_time": datetime.combine(game.game_date, game.start_time) if game.game_date and game.start_time else None,
+        "game_date": game.game_date.isoformat() if game.game_date else None,
+        "start_time": game.start_time.isoformat() if game.start_time else None,
         "location": game.location,
         "max_players": game.max_players,
         "description": game.notes,
@@ -151,15 +154,14 @@ def create_game(
     game_in: GameCreate
 ) -> Any:
     game_data = game_in.model_dump()
-    scheduled_time = game_data.pop("scheduled_time")
     db_game = Game(
         title=game_data["title"],
         script_id=game_data["script_id"],
         store_id=current_user.store_profile.id if current_user.store_profile else None,
         dm_id=game_data.get("dm_id"),
         creator_id=current_user.id,
-        game_date=scheduled_time.date(),
-        start_time=scheduled_time.time(),
+        game_date=game_data["game_date"],
+        start_time=game_data["start_time"],
         max_players=game_data["max_players"],
         status=GameStatus.RECRUITING,
         assignment_method=game_data.get("assignment_method", AssignmentMethod.MANUAL),

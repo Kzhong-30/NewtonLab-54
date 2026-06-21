@@ -16,7 +16,6 @@ class CommentCreate(CommentBase):
 class Comment(CommentBase):
     id: int
     post_id: int
-    user_id: Optional[int] = None
     author_id: Optional[int] = None
     username: Optional[str] = None
     author_name: Optional[str] = None
@@ -58,7 +57,6 @@ class CommunityPostUpdate(BaseModel):
 
 class CommunityPost(CommunityPostBase):
     id: int
-    user_id: Optional[int] = None
     author_id: Optional[int] = None
     username: Optional[str] = None
     author_name: Optional[str] = None

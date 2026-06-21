@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, status, Body
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from ..database import get_db
-from ..models import User
-from ..schemas import User, UserCreate, UserLogin, Token, UserUpdate
+from ..models import User as UserModel
+from ..schemas import User as UserSchema, UserCreate, UserLogin, Token, UserUpdate
 from ..crud import user as crud_user
 from ..core.security import create_access_token, get_current_user, get_password_hash
 from ..core.config import settings
@@ -13,7 +13,7 @@ from ..core.config import settings
 router = APIRouter(prefix="/auth", tags=["认证"])
 
 
-@router.post("/register", response_model=User, status_code=status.HTTP_201_CREATED)
+@router.post("/register", response_model=UserSchema, status_code=status.HTTP_201_CREATED)
 def register(
     *,
     db: Session = Depends(get_db),
@@ -41,31 +41,31 @@ def login(
     db: Session = Depends(get_db),
     form_data: OAuth2PasswordRequestForm = Depends()
 ) -> Any:
-    user = crud_user.authenticate(
+    user_model = crud_user.authenticate(
         db,
         username_or_email=form_data.username,
         password=form_data.password
     )
-    if not user:
+    if not user_model:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="用户名或密码错误"
         )
-    if not user.is_active:
+    if not user_model.is_active:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="用户已被禁用"
         )
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"user_id": user.id, "username": user.username, "role": user.role},
+        data={"sub": user_model.username, "user_id": user_model.id, "username": user_model.username, "role": user_model.role},
         expires_delta=access_token_expires
     )
     return {
         "access_token": access_token,
         "token_type": "bearer",
         "expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-        "user": user
+        "user": user_model
     }
 
 
@@ -81,50 +81,50 @@ def login_json(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="请提供用户名或邮箱"
         )
-    user = crud_user.authenticate(
+    user_model = crud_user.authenticate(
         db,
         username_or_email=username_or_email,
         password=login_data.password
     )
-    if not user:
+    if not user_model:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="用户名或密码错误"
         )
-    if not user.is_active:
+    if not user_model.is_active:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="用户已被禁用"
         )
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"user_id": user.id, "username": user.username, "role": user.role},
+        data={"sub": user_model.username, "user_id": user_model.id, "username": user_model.username, "role": user_model.role},
         expires_delta=access_token_expires
     )
     return {
         "access_token": access_token,
         "token_type": "bearer",
         "expires_in": settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-        "user": user
+        "user": user_model
     }
 
 
-@router.get("/me", response_model=User)
+@router.get("/me", response_model=UserSchema)
 def get_current_user_info(
     *,
-    current_user: User = Depends(get_current_user)
+    current_user: UserModel = Depends(get_current_user)
 ) -> Any:
     return current_user
 
 
-@router.put("/me", response_model=User)
+@router.put("/me", response_model=UserSchema)
 def update_current_user(
     *,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: UserModel = Depends(get_current_user),
     user_in: UserUpdate
 ) -> Any:
     update_data = user_in.model_dump(exclude_unset=True)
     if "password" in update_data and update_data["password"]:
         update_data["hashed_password"] = get_password_hash(update_data.pop("password"))
-    return crud_user.update(db, db_obj=current_user, obj_in=user_in)
+    return crud_user.update(db, db_obj=current_user, obj_in=update_data)
