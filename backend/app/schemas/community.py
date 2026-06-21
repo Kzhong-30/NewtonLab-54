@@ -16,8 +16,10 @@ class CommentCreate(CommentBase):
 class Comment(CommentBase):
     id: int
     post_id: int
-    user_id: int
+    user_id: Optional[int] = None
+    author_id: Optional[int] = None
     username: Optional[str] = None
+    author_name: Optional[str] = None
     avatar: Optional[str] = None
     parent_id: Optional[int] = None
     likes_count: int = 0
@@ -56,8 +58,10 @@ class CommunityPostUpdate(BaseModel):
 
 class CommunityPost(CommunityPostBase):
     id: int
-    user_id: int
+    user_id: Optional[int] = None
+    author_id: Optional[int] = None
     username: Optional[str] = None
+    author_name: Optional[str] = None
     avatar: Optional[str] = None
     likes_count: int = 0
     comments_count: int = 0

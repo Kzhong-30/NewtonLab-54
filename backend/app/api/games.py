@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query, Body
 from sqlalchemy.orm import Session
 from ..database import get_db
 from ..models import User, UserRole, GameStatus, AssignmentMethod, Game, GameParticipant, CharacterAssignment
-from ..schemas import Game, GameCreate, GameUpdate, GameList, GameParticipant, CharacterAssignment
+from ..schemas import Game as GameSchema, GameCreate, GameUpdate, GameList, GameParticipant as GameParticipantSchema, CharacterAssignment as CharacterAssignmentSchema
 from ..crud import game as crud_game
 from ..core.security import get_current_user
 
@@ -90,7 +90,7 @@ def get_my_games(
     return result
 
 
-@router.get("/{game_id}", response_model=Game)
+@router.get("/{game_id}", response_model=GameSchema)
 def get_game(
     *,
     db: Session = Depends(get_db),
@@ -143,7 +143,7 @@ def get_game(
     }
 
 
-@router.post("/", response_model=Game, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=GameSchema, status_code=status.HTTP_201_CREATED)
 def create_game(
     *,
     db: Session = Depends(get_db),

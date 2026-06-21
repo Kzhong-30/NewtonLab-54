@@ -9,10 +9,17 @@ from ..core.security import get_current_user
 
 router = APIRouter(prefix="/community", tags=["社区"])
 
+@router.get("/posts/")
+def get_posts(db: Session = Depends(get_db)):
+    posts = crud_community.get_filtered(db)
+    result = []
+    for post in posts:
+        result.append({"id": post.id, "title": post.title, "content": post.content, "post_type": post.post_type, "author_id": post.author_id, "author_name": post.author.username if post.author else None, "created_at": post.created_at})
+    return result
 
-@router.get("/posts/{post_id}", response_model=CommunityPostSchema)
-def get_post(*, db: Session = Depends(get_db), post_id: int) -> Any:
+@router.get("/posts/{post_id}")
+def get_post(db: Session = Depends(get_db), post_id: int = 0):
     post = crud_community.get(db, id=post_id)
     if not post:
         raise HTTPException(status_code=404, detail="帖子不存在")
-    return {"id": post.id, "title": post.title, "content": post.content, "post_type": post.post_type, "author_id": post.author_id, "author_name": post.author.nickname or post.author.username if post.author else None, "created_at": post.created_at}
+    return {"id": post.id, "title": post.title, "content": post.content, "post_type": post.post_type, "author_id": post.author_id, "author_name": post.author.username if post.author else None, "created_at": post.created_at}

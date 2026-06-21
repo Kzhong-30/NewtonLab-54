@@ -51,6 +51,27 @@ def get_scripts(
     return result
 
 
+
+@router.get("/count")
+def get_scripts_count(
+    *,
+    db: Session = Depends(get_db),
+    script_type: Optional[ScriptType] = Query(None, description="剧本类型"),
+    difficulty: Optional[DifficultyLevel] = Query(None, description="难度"),
+    min_players: Optional[int] = Query(None, ge=2, description="最少人数"),
+    max_players: Optional[int] = Query(None, ge=2, description="最多人数"),
+    is_approved: Optional[bool] = Query(True, description="是否审核通过")
+) -> Any:
+    count = crud_script.get_count_filtered(
+        db,
+        script_type=script_type,
+        difficulty=difficulty,
+        min_players=min_players,
+        max_players=max_players,
+        is_approved=is_approved
+    )
+    return {"count": count}
+
 @router.get("/{script_id}", response_model=Script)
 def get_script(
     *,

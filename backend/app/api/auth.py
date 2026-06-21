@@ -7,7 +7,8 @@ from ..database import get_db
 from ..models import User
 from ..schemas import User, UserCreate, UserLogin, Token, UserUpdate
 from ..crud import user as crud_user
-from ..core.security import create_access_token, get_current_user, get_password_hash, settings
+from ..core.security import create_access_token, get_current_user, get_password_hash
+from ..core.config import settings
 
 router = APIRouter(prefix="/auth", tags=["认证"])
 
