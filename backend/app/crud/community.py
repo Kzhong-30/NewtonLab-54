@@ -8,7 +8,7 @@ from ..schemas import CommunityPostCreate, CommunityPostUpdate, CommentCreate
 
 class CRUDCommunity(CRUDBase[CommunityPost, CommunityPostCreate, CommunityPostUpdate]):
     def create(self, db: Session, *, obj_in: CommunityPostCreate, author_id: int) -> CommunityPost:
-        obj_in_data = obj_in.model_dump()
+        obj_in_data = obj_in.model_dump(exclude={"rating", "is_spoiler"})
         db_obj = CommunityPost(**obj_in_data, author_id=author_id)
         db.add(db_obj)
         db.commit()

@@ -48,7 +48,7 @@ class DMProfileBase(BaseModel):
 
 
 class DMProfileCreate(DMProfileBase):
-    user_id: int
+    pass
 
 
 class DMProfileUpdate(BaseModel):

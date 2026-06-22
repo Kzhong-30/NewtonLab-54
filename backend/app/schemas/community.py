@@ -9,7 +9,6 @@ class CommentBase(BaseModel):
 
 
 class CommentCreate(CommentBase):
-    post_id: int
     parent_id: Optional[int] = None
 
 

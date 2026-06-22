@@ -29,10 +29,8 @@ class GameBase(BaseModel):
     start_time: time
     location: Optional[str] = None
     max_players: int = Field(..., ge=2)
-    description: Optional[str] = None
     notes: Optional[str] = None
-    is_private: bool = False
-    assignment_method: AssignmentMethod = AssignmentMethod.RANDOM
+    assignment_method: AssignmentMethod = AssignmentMethod.MANUAL
     price_per_person: Optional[float] = None
 
 
@@ -46,10 +44,8 @@ class GameUpdate(BaseModel):
     start_time: Optional[time] = None
     location: Optional[str] = None
     max_players: Optional[int] = None
-    description: Optional[str] = None
     notes: Optional[str] = None
     status: Optional[GameStatus] = None
-    is_private: Optional[bool] = None
     assignment_method: Optional[AssignmentMethod] = None
     price_per_person: Optional[float] = None
 
@@ -83,7 +79,7 @@ class GameList(BaseModel):
     creator_name: Optional[str] = None
     dm_id: Optional[int] = None
     dm_name: Optional[str] = None
-    is_private: bool
+    created_at: datetime
     price_per_person: Optional[float] = None
 
     class Config:
